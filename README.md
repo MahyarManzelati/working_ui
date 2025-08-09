@@ -1,47 +1,107 @@
-# Svelte + Vite
+# Travel Itinerary Status Checker (Svelte + Vite + Firebase)
 
-This template should help get you started developing with Svelte in Vite.
+A simple web application for users to check the status of their AI-generated travel itineraries. Enter the `jobId` provided by the backend API, and the app will connect to Firestore in real time to display the status and itinerary details.
 
-## Recommended IDE Setup
+---
 
-[VS Code](https://code.visualstudio.com/) + [Svelte](https://marketplace.visualstudio.com/items?itemName=svelte.svelte-vscode).
+## Live Demo
 
-## Need an official Svelte framework?
+**Cloudflare Pages URL:** _[https://e94689af.status-checker1.pages.dev/](https://e94689af.status-checker1.pages.dev/)_
 
-Check out [SvelteKit](https://github.com/sveltejs/kit#readme), which is also powered by Vite. Deploy anywhere with its serverless-first approach and adapt to various platforms, with out of the box support for TypeScript, SCSS, and Less, and easily-added support for mdsvex, GraphQL, PostCSS, Tailwind CSS, and more.
+---
 
-## Technical considerations
+## Features
 
-**Why use this over SvelteKit?**
+- **Real-time updates** from Firestore via `onSnapshot`.
+- **Simple interface** with a single jobId input.
+- Displays itinerary details (day, theme, activities) once ready.
+- Deployable to **Cloudflare Pages**.
 
-- It brings its own routing solution which might not be preferable for some users.
-- It is first and foremost a framework that just happens to use Vite under the hood, not a Vite app.
+---
 
-This template contains as little as possible to get started with Vite + Svelte, while taking into account the developer experience with regards to HMR and intellisense. It demonstrates capabilities on par with the other `create-vite` templates and is a good starting point for beginners dipping their toes into a Vite + Svelte project.
+## Tech Stack
 
-Should you later need the extended capabilities and extensibility provided by SvelteKit, the template has been structured similarly to SvelteKit so that it is easy to migrate.
+- **Svelte + Vite** — Frontend framework
+- **Firebase Firestore** — Real-time database
+- **Cloudflare Pages** — Deployment
 
-**Why `global.d.ts` instead of `compilerOptions.types` inside `jsconfig.json` or `tsconfig.json`?**
+---
 
-Setting `compilerOptions.types` shuts out all other types not explicitly listed in the configuration. Using triple-slash references keeps the default TypeScript setting of accepting type information from the entire workspace, while also adding `svelte` and `vite/client` type information.
+## Getting Started
 
-**Why include `.vscode/extensions.json`?**
+### 1. Clone the Repository
 
-Other templates indirectly recommend extensions via the README, but this file allows VS Code to prompt the user to install the recommended extension upon opening the project.
-
-**Why enable `checkJs` in the JS template?**
-
-It is likely that most cases of changing variable types in runtime are likely to be accidental, rather than deliberate. This provides advanced typechecking out of the box. Should you like to take advantage of the dynamically-typed nature of JavaScript, it is trivial to change the configuration.
-
-**Why is HMR not preserving my local component state?**
-
-HMR state preservation comes with a number of gotchas! It has been disabled by default in both `svelte-hmr` and `@sveltejs/vite-plugin-svelte` due to its often surprising behavior. You can read the details [here](https://github.com/sveltejs/svelte-hmr/tree/master/packages/svelte-hmr#preservation-of-local-state).
-
-If you have state that's important to retain within a component, consider creating an external store which would not be replaced by HMR.
-
-```js
-// store.js
-// An extremely simple external store
-import { writable } from 'svelte/store'
-export default writable(0)
+```bash
+git clone https://github.com/MahyarManzelati/working_ui.git
+cd working_ui
 ```
+
+### 2. Environment Variables
+
+Copy `.env.example` to `.env` and fill in your Firebase project configuration from the Firebase Console → Project Settings:
+
+```bash
+VITE_FIREBASE_API_KEY=your-key
+VITE_FIREBASE_AUTH_DOMAIN=your-project.firebaseapp.com
+VITE_FIREBASE_PROJECT_ID=your-project-id
+VITE_FIREBASE_APP_ID=your-app-id
+VITE_FIREBASE_STORAGE_BUCKET=your-project.appspot.com
+VITE_FIREBASE_MESSAGING_SENDER_ID=your-sender-id
+```
+
+> Vite exposes only variables prefixed with `VITE_`.
+
+### 3. Install Dependencies
+
+```bash
+npm install
+```
+
+### 4. Run Locally
+
+```bash
+npm run dev
+```
+
+Open [http://localhost:5173](http://localhost:5173) in your browser.
+
+---
+
+## Deployment (Cloudflare Pages)
+
+1. Push your repo to GitHub.
+2. In Cloudflare Pages, create a project from your repo.
+3. Build settings:
+
+   - Framework preset: **Vite**
+   - Build command: `npm run build`
+   - Output directory: `dist`
+
+4. Set the same environment variables in Pages (with `VITE_` prefix).
+5. Deploy — Cloudflare will give you a public URL.
+
+---
+
+## Usage
+
+1. Obtain a `jobId` from the backend API (`working` repository).
+2. Enter it into the UI input field.
+3. View real-time status and itinerary updates.
+
+---
+
+## Firestore Security Rules Example
+
+```
+rules_version = '2';
+service cloud.firestore {
+  match /databases/{database}/documents {
+    match /itineraries/{jobId} {
+      allow read;
+      allow write: if false;
+    }
+  }
+}
+```
+
+---
